@@ -34,4 +34,8 @@ contract TradeableCashflow is ERC721, RedirectAll {
   ) internal override {
       _changeReceiver(to);
   }
+
+  // function transferNow(address _newOwner, uint256 _tokenId) public {
+  //   _transfer(msg.sender, _newOwner, _tokenId);
+  // }
 }
