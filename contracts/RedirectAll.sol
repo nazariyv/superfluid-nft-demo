@@ -20,6 +20,8 @@ contract RedirectAll is SuperAppBase {
     address private receiver;
 
     event ReceiverChanged(address receiver);
+    event NetFlow(int96 netFlow);
+    event OutFlow(int96 outFlow);
 
     constructor(
         ISuperfluid _host,
@@ -73,7 +75,7 @@ contract RedirectAll is SuperAppBase {
       int96 inFlowRate = netFlowRate + outFlowRate;
 
       // @dev If inFlowRate === 0, then delete existing flow.
-      if (outFlowRate != 0){
+      if (outFlowRate != int96(0)) {
         (bytes memory newCtx, ) = host.callAgreementWithContext(
             cfa,
             abi.encodeWithSelector(
@@ -86,7 +88,7 @@ contract RedirectAll is SuperAppBase {
             _ctx
         );
         return newCtx;
-      } else if (inFlowRate == 0) {
+      } else if (inFlowRate == int96(0)) {
         // @dev if inFlowRate is zero, delete outflow.
           (bytes memory newCtx, ) = host.callAgreementWithContext(
               cfa,

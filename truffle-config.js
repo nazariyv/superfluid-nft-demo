@@ -22,6 +22,7 @@ const HDWalletProvider = require("@truffle/hdwallet-provider");
 const infuraKey = process.env.INFURA_KEY;
 const mnemonic = process.env.MNEMONIC;
 const etherscanKey = process.env.ETHERSCAN_API_KEY;
+const GAS_LIMIT = 8e6;
 
 module.exports = {
   /**
@@ -88,12 +89,16 @@ module.exports = {
       provider: () =>
         new HDWalletProvider(
           "spoon mouse pupil sail verify message seat cross setup stumble park dentist",
-          process.env.GOERLI_PROVIDER_URL
+          process.env.GOERLI_PROVIDER_URL,
+          0, //address_index
+          10, // num_addresses
+          true // shareNonce
         ),
-      network_id: 5, // Ropsten's id
-      gas: 5500000, // Ropsten has a lower block limit than mainnet
-      confirmations: 2, // # of confs to wait between deployments. (default: 0)
-      timeoutBlocks: 200, // # of blocks before a deployment times out  (minimum/default: 50)
+      network_id: 5, // Goerli's id
+      gas: GAS_LIMIT,
+      gasPrice: +process.env.GOERLI_GAS_PRICE || 10e9, // 10 GWEI
+      //confirmations: 6, // # of confs to wait between deployments. (default: 0)
+      timeoutBlocks: 50, // # of blocks before a deployment times out  (minimum/default: 50)
       skipDryRun: true, // Skip dry run before migrations? (default: false for public nets )
     },
     // Useful for private networks

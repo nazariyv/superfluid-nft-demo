@@ -9,14 +9,12 @@ const getNetwork = (network) => {
     case "goerli":
       return 5;
     default:
-      throw new Error("unknown network");
+      throw new Error(`unknown network -> [${network}]`);
   }
 };
 
-module.exports = async (deployer, network) => {
-  console.error("network", network);
-  const version = "preview-20200928";
-
+module.exports = async (deployer, network, accounts) => {
+  const version = "0.1.2-preview-20201014";
   const sf = new SuperfluidSDK.Framework({
     chainId: getNetwork(network),
     version: version,
@@ -40,5 +38,19 @@ module.exports = async (deployer, network) => {
     sf.host.address,
     sf.agreements.cfa.address,
     daix.address
+  );
+
+  await dai.mint(accounts[0], web3.utils.toWei("100", "ether"), {
+    from: accounts[0],
+  });
+  await dai.approve(daix.address, "1" + "0".repeat(42), { from: accounts[0] });
+  await daix.upgrade(web3.utils.toWei("70", "ether"), { from: accounts[0] });
+
+  const tradeableCashflow = await TradeableCashflow.deployed();
+
+  await daix.transfer(
+    tradeableCashflow.address,
+    web3.utils.toWei("70", "ether"),
+    { from: accounts[0] }
   );
 };
